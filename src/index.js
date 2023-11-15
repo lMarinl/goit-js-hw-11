@@ -5,7 +5,7 @@ import Notiflix from 'notiflix';
 const refs = {
   form: document.querySelector('#search-form'),
   buttonLoadMore: document.querySelector('.load-more'),
-  list: document.querySelector('gallery'),
+  list: document.querySelector('.gallery'),
   inputForm: document.querySelector('input[name="searchQuery"]'),
 }
 
@@ -66,7 +66,7 @@ console.log(instanceRequest)
       refs.list.innerHTML = '';
       goTop();
       const markup = renderTemplates(data.hits);
-      refs.list.insertAdjacentElement('beforeend', markup.join(''))
+      refs.list.insertAdjacentHTML('beforeend', markup.join(''))
       refs.buttonLoadMore.classList.remove('visible');
       refs.buttonLoadMore.classList.add('load-more');
       instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
@@ -89,21 +89,18 @@ console.log(instanceRequest)
  };
   function renderTemplate ({ webformatURL,largeImageURL, tags, likes, views, comments, downloads }) {
      return  `<div class="photo-card">
-     <img src="${webformatURL}" alt="${tags}" loading="lazy" data-source ="${largeImageURL}" width="400" height="200" />
+     <img src="${webformatURL}" alt="${tags}" loading="lazy" data-source ="${largeImageURL}" width="450" height="200" />
      <div class="info">
-       <p class="info-item">
-         <b>${likes}</b>
+       <p class="info-item">Likes:
+       <span class ="descr">${likes}</span>
        </p>
-       <p class="info-item">
-         <b>Views</b>
+       <p class="info-item">Views:
          <span class ="descr">${views}</span>
        </p>
-       <p class="info-item">
-       <b>Comments</b>
+       <p class="info-item">Comments:
        <span class ="descr">${comments}</span>
        </p>
-       <p class="info-item">
-       <b>Downloads</b>
+       <p class="info-item">Downloads:
        <span class ="descr">${downloads}</span>
        </p>
      </div>
