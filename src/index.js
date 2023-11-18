@@ -31,11 +31,12 @@ class InstanceRequest {
         orientation: 'horizontal',
         q: this.q,
         page: this.page,
-        per_page: 40,
+        per_page: 39,
       },
     });
 
     const response = await instance.get();
+    console.log(response);
     console.log(response.data);
     return response.data;
   };
@@ -50,8 +51,8 @@ console.log(instanceRequest)
     if(refs.inputForm.value === '') {
       refs.list.innerHTML = '';
       Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-      refs.buttonLoadMore.classList.remove('visible');
-      refs.buttonLoadMore.classList.add('load-more');
+      refs.buttonLoadMore.classList.add('visible');
+      refs.buttonLoadMore.classList.remove('load-more');
       return
     };
 
@@ -59,23 +60,25 @@ console.log(instanceRequest)
     instanceRequest.page = 1;
 
     instanceRequest.searchInfo()
-    .then( data => {
-      if (data.hits.length === 0) {
-        throw new Error(data.status)
-      };
-      refs.list.innerHTML = '';
-      goTop();
-      const markup = renderTemplates(data.hits);
-      refs.list.insertAdjacentHTML('beforeend', markup.join(''))
-      refs.buttonLoadMore.classList.remove('visible');
-      refs.buttonLoadMore.classList.add('load-more');
-      instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
-      updateBtnStatus();
-      console.log(markup)
-    })
-    .catch (() => {Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-    refs.buttonLoadMore.classList.remove('visible')
-    refs.buttonLoadMore.classList.add('load-more')})
+      .then(data => {
+        if (data.hits.length === 0) {
+          throw new Error(data.status)
+        };
+        refs.list.innerHTML = '';
+        goTop();
+        const markup = renderTemplates(data.hits);
+        refs.list.insertAdjacentHTML('beforeend', markup.join(''))
+        refs.buttonLoadMore.classList.remove('load-more');
+        refs.buttonLoadMore.classList.add('visible');
+        instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
+        updateBtnStatus();
+        console.log(markup)
+      })
+      .catch(() => {
+        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        refs.buttonLoadMore.classList.remove('visible')
+        refs.buttonLoadMore.classList.add('load-more');
+      });
     console.log();
     };
   function onBtnLoadMore() {
@@ -125,7 +128,6 @@ console.log(instanceRequest)
   function goTop() {
 
   if (window.scrollY > 0) {
-
     window.scrollBy(0, -20);
     setTimeout(goTop, 0); 
   }
