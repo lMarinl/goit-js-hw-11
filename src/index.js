@@ -45,7 +45,7 @@ console.log(instanceRequest)
   function onSearchInfo (e) {
     e.preventDefault();
 
-    if(refs.inputForm.value === '') {
+    if( refs.inputForm.value === '') {
       refs.list.innerHTML = '';
       Notiflix.Notify.info("string cannot be empty");
       return
@@ -54,20 +54,23 @@ console.log(instanceRequest)
 
     instanceRequest.searchInfo()
       try{
-        data => {
         if (data.hits.length === 0) {
+          console.log(refs.inputForm.value);
+    console.log(instanceRequest.page);
           throw new Error(data.status)
-        };
+          };
+          console.log(data)
         refs.list.innerHTML = '';
         goTop();
         const markup = renderTemplates(data.hits);
+        console.log(markup)
         refs.list.insertAdjacentHTML('beforeend', markup.join(''))
         refs.buttonLoadMore.classList.remove('load-more');
         refs.buttonLoadMore.classList.add('visible');
         instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
         updateBtnStatus();
         console.log(markup)
-      }}
+      }
       catch{() => {
         refs.list.innerHTML = '';
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
@@ -77,7 +80,8 @@ console.log(instanceRequest)
     };
 async  function onBtnLoadMore() {
 try{
-     const data = await instanceRequest.page + 1;
+   instanceRequest.page += 1;
+  console.log(data)
     instanceRequest.searchInfo()
         const renderMarkup = renderTemplates(data.hits);
         refs.list.insertAdjacentHTML('beforeend', renderMarkup.join(''));
@@ -123,7 +127,6 @@ try{
 };
 
   function goTop() {
-
   if (window.scrollY > 0) {
     window.scrollBy(0, -20);
     setTimeout(goTop, 0); 
