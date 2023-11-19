@@ -42,7 +42,7 @@ class InstanceRequest {
 const instanceRequest = new InstanceRequest();
 console.log(instanceRequest)
 
-  function onSearchInfo (e) {
+ async function onSearchInfo (e) {
     e.preventDefault();
 
     if( refs.inputForm.value === '') {
@@ -50,44 +50,44 @@ console.log(instanceRequest)
       Notiflix.Notify.info("string cannot be empty");
       return
     };
-
-
-    instanceRequest.searchInfo()
-      try{
+   if (refs.inputForm.value !== instanceRequest.q) {
+     refs.list.innerHTML = '';
+     instanceRequest.page = 1;
+     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+}
+   instanceRequest.q = refs.inputForm.value.trim();
+   try {
+        const data = await  instanceRequest.searchInfo()
         if (data.hits.length === 0) {
-          console.log(refs.inputForm.value);
-    console.log(instanceRequest.page);
           throw new Error(data.status)
           };
-          console.log(data)
         refs.list.innerHTML = '';
         goTop();
         const markup = renderTemplates(data.hits);
-        console.log(markup)
         refs.list.insertAdjacentHTML('beforeend', markup.join(''))
         refs.buttonLoadMore.classList.remove('load-more');
         refs.buttonLoadMore.classList.add('visible');
         instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
         updateBtnStatus();
-        console.log(markup)
       }
       catch{() => {
         refs.list.innerHTML = '';
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         refs.buttonLoadMore.classList.remove('visible')
         refs.buttonLoadMore.classList.add('load-more');
-      }};
+   }};
+   
     };
 async  function onBtnLoadMore() {
 try{
-   instanceRequest.page += 1;
+   const data = await instanceRequest.searchInfo()
   console.log(data)
     instanceRequest.searchInfo()
         const renderMarkup = renderTemplates(data.hits);
         refs.list.insertAdjacentHTML('beforeend', renderMarkup.join(''));
         updateBtnStatus();
     } catch (error) {
-    console.error('An error occurred:', error.status );
+    console.error('Error', error.status );
   }
 };
 
