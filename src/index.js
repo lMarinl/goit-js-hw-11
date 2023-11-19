@@ -1,14 +1,12 @@
 import axios from 'axios';
 import Notiflix from 'notiflix';
 
-
 const refs = {
   form: document.querySelector('#search-form'),
   buttonLoadMore: document.querySelector('.load-more'),
   list: document.querySelector('.gallery'),
   inputForm: document.querySelector('input[name="searchQuery"]'),
 }
-
 
 refs.form.addEventListener('submit', onSearchInfo);
 refs.buttonLoadMore.addEventListener('click', onBtnLoadMore);
@@ -31,13 +29,12 @@ class InstanceRequest {
         orientation: 'horizontal',
         q: this.q,
         page: this.page,
-        per_page: 39,
+        per_page: 40,
       },
     });
 
     const response = await instance.get();
-    console.log(response);
-    console.log(response.data);
+
     return response.data;
   };
 };
@@ -50,17 +47,14 @@ console.log(instanceRequest)
 
     if(refs.inputForm.value === '') {
       refs.list.innerHTML = '';
-      Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-      refs.buttonLoadMore.classList.add('visible');
-      refs.buttonLoadMore.classList.remove('load-more');
+      Notiflix.Notify.info("string cannot be empty");
       return
     };
 
-    instanceRequest.q = refs.inputForm.value;
-    instanceRequest.page = 1;
 
     instanceRequest.searchInfo()
-      .then(data => {
+      try{
+        data => {
         if (data.hits.length === 0) {
           throw new Error(data.status)
         };
@@ -73,23 +67,26 @@ console.log(instanceRequest)
         instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
         updateBtnStatus();
         console.log(markup)
-      })
-      .catch(() => {
+      }}
+      catch{() => {
+        refs.list.innerHTML = '';
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         refs.buttonLoadMore.classList.remove('visible')
         refs.buttonLoadMore.classList.add('load-more');
-      });
-    console.log();
+      }};
     };
-  function onBtnLoadMore() {
-    instanceRequest.page += 1;
-
-    instanceRequest.searchInfo().then(data => {
+async  function onBtnLoadMore() {
+try{
+     const data = await instanceRequest.page + 1;
+    instanceRequest.searchInfo()
         const renderMarkup = renderTemplates(data.hits);
         refs.list.insertAdjacentHTML('beforeend', renderMarkup.join(''));
         updateBtnStatus();
-    })
- };
+    } catch (error) {
+    console.error('An error occurred:', error.status );
+  }
+};
+
   function renderTemplate ({ webformatURL,largeImageURL, tags, likes, views, comments, downloads }) {
      return  `<div class="photo-card">
      <img src="${webformatURL}" alt="${tags}" loading="lazy" data-source ="${largeImageURL}" width="450" height="200" />
