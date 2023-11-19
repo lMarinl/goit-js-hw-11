@@ -45,17 +45,21 @@ console.log(instanceRequest)
  async function onSearchInfo (e) {
     e.preventDefault();
 
-    if( refs.inputForm.value === '') {
+    if( refs.inputForm.value.trim() === '') {
       refs.list.innerHTML = '';
+      instanceRequest.q = refs.inputForm.value;
       Notiflix.Notify.info("string cannot be empty");
       return
     };
    if (refs.inputForm.value !== instanceRequest.q) {
      refs.list.innerHTML = '';
      instanceRequest.page = 1;
-     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+     refs.buttonLoadMore.classList.remove('visible');
+     refs.buttonLoadMore.classList.add('load-more');
+
+
 }
-   instanceRequest.q = refs.inputForm.value.trim();
+   instanceRequest.q = refs.inputForm.value;
    try {
         const data = await  instanceRequest.searchInfo()
         if (data.hits.length === 0) {
@@ -70,12 +74,14 @@ console.log(instanceRequest)
         instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
         updateBtnStatus();
       }
-      catch{() => {
+   catch {
+
+     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         refs.list.innerHTML = '';
-        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         refs.buttonLoadMore.classList.remove('visible')
         refs.buttonLoadMore.classList.add('load-more');
-   }};
+
+};
    
     };
 async  function onBtnLoadMore() {
