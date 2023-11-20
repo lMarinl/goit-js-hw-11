@@ -40,15 +40,17 @@ class InstanceRequest {
 };
 
 const instanceRequest = new InstanceRequest();
-console.log(instanceRequest)
 
  async function onSearchInfo (e) {
     e.preventDefault();
 
     if( refs.inputForm.value.trim() === '') {
       refs.list.innerHTML = '';
+      instanceRequest.page = 1;
       instanceRequest.q = refs.inputForm.value;
       Notiflix.Notify.info("string cannot be empty");
+      refs.buttonLoadMore.classList.remove('visible');
+     refs.buttonLoadMore.classList.add('load-more');
       return
     };
    if (refs.inputForm.value !== instanceRequest.q) {
@@ -77,10 +79,9 @@ console.log(instanceRequest)
    catch {
 
      Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        refs.list.innerHTML = '';
-        refs.buttonLoadMore.classList.remove('visible')
-        refs.buttonLoadMore.classList.add('load-more');
-
+     refs.list.innerHTML = '';
+     refs.buttonLoadMore.classList.remove('visible');
+     refs.buttonLoadMore.classList.add('load-more');
 };
    
     };
@@ -89,11 +90,13 @@ try{
    const data = await instanceRequest.searchInfo()
   console.log(data)
     instanceRequest.searchInfo()
-        const renderMarkup = renderTemplates(data.hits);
+        const renderMarkup = renderTemplates(data.hits); 
         refs.list.insertAdjacentHTML('beforeend', renderMarkup.join(''));
         updateBtnStatus();
     } catch (error) {
     console.error('Error', error.status );
+    // refs.buttonLoadMore.classList.remove('visible');
+    //  refs.buttonLoadMore.classList.add('load-more');
   }
 };
 
