@@ -88,10 +88,10 @@ const instanceRequest = new InstanceRequest();
 async function onBtnLoadMore() {
 
   instanceRequest.page += 1;
-
 try{
    const data = await instanceRequest.searchInfo()
-    instanceRequest.searchInfo()
+
+    // instanceRequest.searchInfo()
         const renderMarkup = renderTemplates(data.hits); 
         refs.list.insertAdjacentHTML('beforeend', renderMarkup.join(''));
         updateBtnStatus();
