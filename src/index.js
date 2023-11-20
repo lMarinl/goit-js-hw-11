@@ -82,6 +82,7 @@ const instanceRequest = new InstanceRequest();
      refs.list.innerHTML = '';
      refs.buttonLoadMore.classList.remove('visible');
      refs.buttonLoadMore.classList.add('load-more');
+     instanceRequest.page += 1;
 };
    
     };
