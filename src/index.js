@@ -43,7 +43,7 @@ const instanceRequest = new InstanceRequest();
 
  async function onSearchInfo (e) {
     e.preventDefault();
-
+    
     if( refs.inputForm.value.trim() === '') {
       refs.list.innerHTML = '';
       instanceRequest.page = 1;
@@ -58,10 +58,9 @@ const instanceRequest = new InstanceRequest();
      instanceRequest.page = 1;
      refs.buttonLoadMore.classList.remove('visible');
      refs.buttonLoadMore.classList.add('load-more');
-
-
-}
+};
    instanceRequest.q = refs.inputForm.value;
+
    try {
         const data = await  instanceRequest.searchInfo()
         if (data.hits.length === 0) {
@@ -74,6 +73,7 @@ const instanceRequest = new InstanceRequest();
         refs.buttonLoadMore.classList.remove('load-more');
         refs.buttonLoadMore.classList.add('visible');
         instanceRequest.totalPage = Math.ceil(data.totalHits / 40);
+        Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images`)
         updateBtnStatus();
       }
    catch {
@@ -82,24 +82,21 @@ const instanceRequest = new InstanceRequest();
      refs.list.innerHTML = '';
      refs.buttonLoadMore.classList.remove('visible');
      refs.buttonLoadMore.classList.add('load-more');
-    //  instanceRequest.page += 1;
 };
-   
-    };
+};
+
 async function onBtnLoadMore() {
 
   instanceRequest.page += 1;
+
 try{
    const data = await instanceRequest.searchInfo()
-  console.log(data)
     instanceRequest.searchInfo()
         const renderMarkup = renderTemplates(data.hits); 
         refs.list.insertAdjacentHTML('beforeend', renderMarkup.join(''));
         updateBtnStatus();
     } catch (error) {
     console.error('Error', error.status );
-    // refs.buttonLoadMore.classList.remove('visible');
-    //  refs.buttonLoadMore.classList.add('load-more');
   }
 };
 
@@ -135,7 +132,6 @@ try{
     refs.buttonLoadMore.classList.add('load-more');
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
   }
-
 };
 
   function goTop() {
