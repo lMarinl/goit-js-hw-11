@@ -82,11 +82,13 @@ const instanceRequest = new InstanceRequest();
      refs.list.innerHTML = '';
      refs.buttonLoadMore.classList.remove('visible');
      refs.buttonLoadMore.classList.add('load-more');
-     instanceRequest.page += 1;
+    //  instanceRequest.page += 1;
 };
    
     };
-async  function onBtnLoadMore() {
+async function onBtnLoadMore() {
+
+  instanceRequest.page += 1;
 try{
    const data = await instanceRequest.searchInfo()
   console.log(data)
